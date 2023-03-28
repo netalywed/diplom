@@ -19,16 +19,18 @@ from rest_framework.routers import DefaultRouter
 
 from backend.serializers import ProductInfoSerializer
 from backend.views import ShopViewSet, CategoryViewSet, ProductInfoViewSet, RegisterAccount, LoginAccount, \
-    ConfirmAccount, AccountDetails
+    ConfirmAccount, AccountDetails, PartnerUpdate, OrderView, OrderItemViewSet
 
 r = DefaultRouter()
 r.register('categories', CategoryViewSet)
 r.register('shops', ShopViewSet)
 r.register('products', ProductInfoViewSet)
+r.register('orders', OrderItemViewSet)
 
 
 
 urlpatterns = [
+    path('partner/update', PartnerUpdate.as_view(), name='partner-update'),
     path('admin/', admin.site.urls),
     path('user/register', RegisterAccount.as_view(), name='user-register'),
     path('user/register/confirm', ConfirmAccount.as_view(), name='user-register-confirm'),
@@ -37,4 +39,5 @@ urlpatterns = [
     # path('user/password_reset', reset_password_request_token, name='password-reset'),
     # path('user/password_reset/confirm', reset_password_confirm, name='password-reset-confirm'),
     path('user/login', LoginAccount.as_view(), name='user-login'),
+    path('order', OrderView.as_view(), name='order'),  # не работает, надо ли? разобраться
 ] + r.urls
