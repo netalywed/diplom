@@ -18,14 +18,17 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('id', 'first_name', 'last_name', 'email', 'company', 'position', 'contacts')
+        fields = ('id', 'first_name', 'last_name', 'email', 'company', 'position', 'contacts', 'type')
         read_only_fields = ('id',)
 
 
 class ShopSerializer(serializers.ModelSerializer):
+    user = serializers.StringRelatedField()
+
     class Meta:
         model = Shop
-        fields = ('id', 'name', )
+        fields = ('id', 'name', 'url', 'state', 'user')
+        read_only_fields = ('id',)
 
 
 class CategorySerializer(WritableNestedModelSerializer, serializers.ModelSerializer):

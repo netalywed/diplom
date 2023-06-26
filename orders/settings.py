@@ -38,7 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'rest_framework.authtoken',
+    'rest_framework.authtoken',    # установить pip install django-rest-authtoken
     'django_rest_passwordreset',
 
     'backend',
@@ -143,9 +143,9 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 # EMAIL_USE_TLS = True
 
 # узнать, что за почты и пароль
-EMAIL_HOST = 'smtp.mail.ru'
-EMAIL_HOST_USER = 'nw@mail.ru'
-EMAIL_HOST_PASSWORD = '123'
+EMAIL_HOST = 'netaly_wed.mail.ru'
+EMAIL_HOST_USER = 'netaly_wed@mail.ru'
+EMAIL_HOST_PASSWORD = '6gWVvn9xaichBS7AM02q'
 EMAIL_PORT = '465'
 EMAIL_USE_SSL = True
 SERVER_EMAIL = EMAIL_HOST_USER
@@ -162,8 +162,12 @@ REST_FRAMEWORK = {
 
     'DEFAULT_AUTHENTICATION_CLASSES': (
         # 'rest_framework.authentication.SessionAuthentication',
-        'rest_framework.authentication.BasicAuthentication',
-        # 'rest_framework.authentication.TokenAuthentication',
+        # 'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
     ),
+    #
+    # 'DEFAULT_PERMISSION_CLASSES': [
+    #     'rest_framework.permissions.IsAuthenticated',
+    # ]
 
 }

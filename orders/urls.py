@@ -19,7 +19,7 @@ from rest_framework.routers import DefaultRouter
 
 from backend.serializers import ProductInfoSerializer
 from backend.views import ShopViewSet, CategoryViewSet, ProductInfoViewSet, RegisterAccount, LoginAccount, \
-    ConfirmAccount, AccountDetails, PartnerUpdate, OrderView, OrderItemViewSet
+    ConfirmAccount, AccountDetails, PartnerUpdate, OrderView, OrderItemViewSet, BasketView, ContactView, PartnerState
 
 r = DefaultRouter()
 r.register('categories', CategoryViewSet)
@@ -31,13 +31,15 @@ r.register('orders', OrderItemViewSet)
 
 urlpatterns = [
     path('partner/update', PartnerUpdate.as_view(), name='partner-update'),
+    path('partner/state', PartnerState.as_view(), name='partner-state'),
     path('admin/', admin.site.urls),
     path('user/register', RegisterAccount.as_view(), name='user-register'),
     path('user/register/confirm', ConfirmAccount.as_view(), name='user-register-confirm'),
-    path('user/details', AccountDetails.as_view(), name='user-details'),
-    # path('user/contact', ContactView.as_view(), name='user-contact'),
+    path('user/details/', AccountDetails.as_view(), name='user-details'),
+    path('user/contact', ContactView.as_view(), name='user-contact'),
     # path('user/password_reset', reset_password_request_token, name='password-reset'),
     # path('user/password_reset/confirm', reset_password_confirm, name='password-reset-confirm'),
     path('user/login', LoginAccount.as_view(), name='user-login'),
-    path('order', OrderView.as_view(), name='order'),  # не работает, надо ли? разобраться
+    path('order/', OrderView.as_view(), name='order'),
+    path('basket/', BasketView.as_view(), name='basket'),
 ] + r.urls
