@@ -1,3 +1,6 @@
+from django import forms
+from django.urls import path
+from django.shortcuts import render, redirect
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from .models import Shop, ProductInfo, User, Category, Product, Parameter, ProductParameter, Order, OrderItem, Contact, \
@@ -27,9 +30,32 @@ class CustomUserAdmin(UserAdmin):
     list_display = ('email', 'first_name', 'last_name', 'is_staff')
 
 
+class ImportFrom(forms.Form):
+    url = forms.URLField()
+
+
 @admin.register(Shop)
 class ShopAdmin(admin.ModelAdmin):
-    pass
+    change_list_template = 'admin/shop_change_list.html'
+
+    def get_urls(self):
+        urls = super().get_urls()
+        my_urls = [
+            path('import/', self.import_data)
+        ]
+        return urls + my_urls
+
+    def import_data(self, request):
+        if request.method == "POST":
+            form = ImportFrom(request.POST)
+            if form.is_valid():
+                url = form.cleaned_data['url']
+                Shop.load_goods(url)
+                self.message_user(request, "Data imported successfully")
+                return redirect("..")
+        else:
+            form = ImportFrom()
+        return render(request, 'admin/import.html', {'form': form})
 
 
 @admin.register(Category)
