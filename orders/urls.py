@@ -19,7 +19,8 @@ from rest_framework.routers import DefaultRouter
 
 from backend.serializers import ProductInfoSerializer
 from backend.views import ShopViewSet, CategoryViewSet, ProductInfoViewSet, RegisterAccount, LoginAccount, \
-    ConfirmAccount, AccountDetails, PartnerUpdate, OrderView, OrderItemViewSet, BasketView, ContactView, PartnerState
+    ConfirmAccount, AccountDetails, PartnerUpdate, OrderView, OrderItemViewSet, BasketView, ContactView, PartnerState, \
+    ProductDetailView
 
 r = DefaultRouter()
 r.register('categories', CategoryViewSet)
@@ -42,4 +43,5 @@ urlpatterns = [
     path('user/login', LoginAccount.as_view(), name='user-login'),
     path('order/', OrderView.as_view(), name='order'),
     path('basket/', BasketView.as_view(), name='basket'),
+    path('products/<int:pk>/', ProductDetailView.as_view(), name='product-detail')
 ] + r.urls

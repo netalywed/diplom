@@ -9,23 +9,25 @@ from django.core.validators import URLValidator
 from django.db import IntegrityError
 from django.db.models import Q, Sum, F
 from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
 from requests import get
 from ujson import loads as load_json
 from yaml import load as load_yaml, Loader
 
+from rest_framework import status
 from rest_framework.authtoken.models import Token
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ViewSet, ModelViewSet
-from rest_framework.generics import ListAPIView
+from rest_framework.generics import ListAPIView, RetrieveAPIView
 
 from .permissions import IsOwnerOrReader, IsSeller
 from .models import Shop, Category, Product, ProductInfo, Parameter, ProductParameter, Order, ConfirmEmailToken, User, \
     OrderItem, Contact
 from .serializers import ShopSerializer, CategorySerializer, ProductSerializer, ProductInfoSerializer, \
     ParameterSerializer, ProductParameterSerializer, OrderSerializer, UserSerializer, OrderItemSerializer, \
-    ContactSerializer
+    ContactSerializer, ProductDetailInfoSerializer
 
 from .signals import new_user_registered, new_order
 
@@ -90,11 +92,11 @@ class ConfirmAccount(APIView):  # работает
                 token.user.is_active = True
                 token.user.save()
                 token.delete()
-                return JsonResponse({'Status': True})
+                return JsonResponse({'Status': status.HTTP_200_OK})
             else:
-                return JsonResponse({'Status': False, 'Errors': 'Неправильно указан токен или email'})
+                return JsonResponse({'Status': status.HTTP_400_BAD_REQUEST, 'Errors': 'Неправильно указан токен или email'})
 
-        return JsonResponse({'Status': False, 'Errors': 'Не указаны все необходимые аргументы'})
+        return JsonResponse({'Status': status.HTTP_400_BAD_REQUEST, 'Errors': 'Не указаны все необходимые аргументы'})
 
 
 class AccountDetails(APIView):  # работает get, post - добавить права
@@ -156,14 +158,14 @@ class LoginAccount(APIView):  # чтобы залогинить, нужно в �
 
                     print('status true')
 
-                    return JsonResponse({'Status': True, 'Token': token.key})
+                    return JsonResponse({'Status': status.HTTP_200_OK, 'Token': token.key})
 
             print('Не удалось авторизовать')
 
-            return JsonResponse({'Status': False, 'Errors': 'Не удалось авторизовать'})
+            return JsonResponse({'Status': status.HTTP_401_UNAUTHORIZED, 'Errors': 'Не удалось авторизовать'})
 
         print('Не указаны все необходимые аргументы')
-        return JsonResponse({'Status': False, 'Errors': 'Не указаны все необходимые аргументы'})
+        return JsonResponse({'Status': status.HTTP_400_BAD_REQUEST, 'Errors': 'Не указаны все необходимые аргументы'})
 
 
 class ShopViewSet(ModelViewSet):  # точно надо
@@ -199,6 +201,15 @@ class ProductParameterViewSet(ModelViewSet):  # надо?
 class OrderItemViewSet(ModelViewSet):
     queryset = OrderItem.objects.all()
     serializer_class = OrderItemSerializer
+
+
+class ProductDetailView(RetrieveAPIView):  # возвращает объект товара (карточку)
+    # queryset = ProductInfo.objects.all()
+    serializer_class = ProductDetailInfoSerializer
+
+    def get_object(self):
+        product_id = self.kwargs.get('pk')
+        return get_object_or_404(ProductInfo, product__id=product_id)
 
 
 class OrderView(APIView): # работает get, надо протестировать post

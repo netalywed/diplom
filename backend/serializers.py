@@ -46,11 +46,11 @@ class ParameterSerializer(serializers.ModelSerializer):   # он нужен?
 
 
 class ProductParameterSerializer(serializers.ModelSerializer):
-    parameter_name = serializers.StringRelatedField()
+    parameter = serializers.StringRelatedField()
 
     class Meta:
         model = ProductParameter
-        fields = ('parameter_name', 'value',)
+        fields = ('parameter', 'value')
 
 
 class ProductSerializer(WritableNestedModelSerializer, serializers.ModelSerializer):
@@ -69,6 +69,15 @@ class ProductInfoSerializer(WritableNestedModelSerializer, serializers.ModelSeri
         model = ProductInfo
         fields = ('id', 'product', 'model', 'external_id', 'quantity', 'price', 'price_rrc', 'product_parameters')
         read_only_fields = ('id',)
+
+
+class ProductDetailInfoSerializer(serializers.ModelSerializer):
+    product = ProductSerializer(read_only=True)
+    shop = ShopSerializer(read_only=True)
+
+    class Meta:
+        model = ProductInfo
+        fields = ('id', 'product', 'model', 'quantity', 'price', 'shop')
 
 
 class OrderItemSerializer(serializers.ModelSerializer):
