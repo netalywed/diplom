@@ -1,9 +1,10 @@
-from django.conf import settings
+from orders import settings
 from django.core.mail import EmailMultiAlternatives
 from django.dispatch import receiver, Signal
+from django.db.models.signals import post_save
 from django_rest_passwordreset.signals import reset_password_token_created
 
-from backend.models import ConfirmEmailToken, User
+from backend.models import ConfirmEmailToken, User, Order, Contact
 
 
 # не работает с джанго версией 4+
@@ -18,6 +19,39 @@ from backend.models import ConfirmEmailToken, User
 
 new_user_registered = Signal()
 new_order = Signal()
+
+
+@receiver(post_save, sender=Contact)
+def send_email_after_address_added(sender, instance, created, **kwargs):
+    if created:
+        msg = EmailMultiAlternatives(
+            # title:
+            f"Delivery address for {instance.user.email}",
+            # message:
+            "You have successfully added a new delivery address!",
+            # from:
+            settings.EMAIL_HOST_USER,
+            # to:
+            [instance.user.email]
+        )
+        msg.send()
+
+
+@receiver(post_save, sender=Order)
+def send_email_after_order_confirmed(sender, instance, created, **kwargs):
+    if created and instance.state == 'confirmed':
+        for item in instance.ordered_items.all():
+            msg = EmailMultiAlternatives(
+                # title:
+                f"New order",
+                # message:
+                f"You have a new order for produst {item.product_info.product.name}",
+                # from:
+                settings.EMAIL_HOST_USER,
+                # to:
+                [item.product_info.shop.user.email]
+            )
+            msg.send()
 
 
 @receiver(reset_password_token_created)

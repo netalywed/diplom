@@ -254,6 +254,31 @@ class OrderView(APIView):  # работает get, надо протестиро
         return JsonResponse({'Status': False, 'Errors': 'Не указаны все необходимые аргументы'})
 
 
+class ConfirmOrderView(APIView):
+    def post(self, request, *args, **kwargs):
+        contact_data = request.data.get('contact')
+        order_id = request.data.get('order_id')
+
+        # create a new Contact
+        contact_serializer = ContactSerializer(data=contact_data)
+        if contact_serializer.is_valid():
+            contact = contact_serializer.save(user=request.user)
+        else:
+            return Response(contact_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            order = Order.objects.get(id=order_id, user=request.user)
+        except Order.DoesNotExist:
+            return Response({'error': 'Order not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+        order.contact = contact
+        order.state = 'confirmed'
+        order.save()
+
+        order_serializer = OrderSerializer(order)
+
+        return Response(order_serializer.data, status=status.HTTP_200_OK)
+
 class BasketView(APIView):
     """
     Класс для работы с корзиной пользователя
