@@ -29,7 +29,6 @@ r.register('products', ProductInfoViewSet)
 r.register('orders', OrderItemViewSet)
 
 
-
 urlpatterns = [
     path('partner/update', PartnerUpdate.as_view(), name='partner-update'),
     path('partner/state', PartnerState.as_view(), name='partner-state'),

@@ -212,7 +212,7 @@ class ProductDetailView(RetrieveAPIView):  # возвращает объект �
         return get_object_or_404(ProductInfo, product__id=product_id)
 
 
-class OrderView(APIView): # работает get, надо протестировать post
+class OrderView(APIView):  # работает get, надо протестировать post
     """
     Класс для получения и размешения заказов пользователями
     """
@@ -296,9 +296,7 @@ class BasketView(APIView):
                             return JsonResponse({'Status': False, 'Errors': str(error)})
                         else:
                             objects_created += 1
-
                     else:
-
                         return JsonResponse({'Status': False, 'Errors': serializer.errors})
 
                 return JsonResponse({'Status': True, 'Создано объектов': objects_created})
