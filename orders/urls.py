@@ -20,13 +20,14 @@ from rest_framework.routers import DefaultRouter
 from backend.serializers import ProductInfoSerializer
 from backend.views import ShopViewSet, CategoryViewSet, ProductInfoViewSet, RegisterAccount, LoginAccount, \
     ConfirmAccount, AccountDetails, PartnerUpdate, OrderView, OrderItemViewSet, BasketView, ContactView, PartnerState, \
-    ProductDetailView
+    ProductDetailView, ParameterViewSet
 
 r = DefaultRouter()
 r.register('categories', CategoryViewSet)
 r.register('shops', ShopViewSet)
 r.register('products', ProductInfoViewSet)
 r.register('orders', OrderItemViewSet)
+r.register('parameters', ParameterViewSet)
 
 
 urlpatterns = [
