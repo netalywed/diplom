@@ -23,7 +23,9 @@ new_order = Signal()
 
 @receiver(post_save, sender=Contact)
 def send_email_after_address_added(sender, instance, created, **kwargs):
+    print('test')
     if created:
+        print('test')
         msg = EmailMultiAlternatives(
             # title:
             f"Delivery address for {instance.user.email}",
@@ -35,12 +37,15 @@ def send_email_after_address_added(sender, instance, created, **kwargs):
             [instance.user.email]
         )
         msg.send()
+        print('test')
 
 
 @receiver(post_save, sender=Order)
-def send_email_after_order_confirmed(sender, instance, created, **kwargs):
-    if created and instance.state == 'confirmed':
+def send_email_after_order_confirmed(sender, instance, **kwargs):
+    print('test1')
+    if not kwargs.get('created') and instance.state == 'confirmed':
         for item in instance.ordered_items.all():
+            print('test1')
             msg = EmailMultiAlternatives(
                 # title:
                 f"New order",

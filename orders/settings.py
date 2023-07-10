@@ -141,12 +141,13 @@ DEFAULT_AUTO_FIELD='django.db.models.AutoField'
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 # EMAIL_USE_TLS = True
+EMAIL_USE_TLS = False
 
 # узнать, что за почты и пароль
-EMAIL_HOST = 'netaly_wed.mail.ru'
+EMAIL_HOST = 'smtp.mail.ru'
 EMAIL_HOST_USER = 'netaly_wed@mail.ru'
-EMAIL_HOST_PASSWORD = '6gWVvn9xaichBS7AM02q'
-EMAIL_PORT = '465'
+EMAIL_HOST_PASSWORD = 'R7zfdAJfgmDgY4izwMfu' #'6gWVvn9xaichBS7AM02q'
+EMAIL_PORT = 465
 EMAIL_USE_SSL = True
 SERVER_EMAIL = EMAIL_HOST_USER
 

@@ -275,9 +275,16 @@ class ConfirmOrderView(APIView):
         order.state = 'confirmed'
         order.save()
 
-        order_serializer = OrderSerializer(order)
+        order = Order.objects.filter(
+            user_id=request.user.id).exclude(state='basket').prefetch_related(
+            'ordered_items__product_info__product__category',
+            'ordered_items__product_info__product_parameters__parameter').select_related('contact').annotate(
+            total_sum=Sum(F('ordered_items__quantity') * F('ordered_items__product_info__price'))).distinct()
+
+        order_serializer = OrderSerializer(order, many=True)
 
         return Response(order_serializer.data, status=status.HTTP_200_OK)
+
 
 class BasketView(APIView):
     """
